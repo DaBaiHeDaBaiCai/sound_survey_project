@@ -1,41 +1,96 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <title>管理面板</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
-    .wrap { max-width: 800px; margin: 40px auto; text-align: left; }
-    .card { border: 1px solid #eee; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
-    .muted { color: #666; font-size: 14px; }
-    .row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
-    .btn-outline { background: #fff; color:#2d89ef; border:1px solid #2d89ef; }
-    .btn-danger { background: #e74c3c; }
-    .btn { display:inline-block; padding:10px 16px; border-radius:8px; text-decoration:none; color:#fff; background:#2d89ef; }
+    body{
+      font-family:"Noto Sans SC",system-ui,-apple-system;
+      background:#f8fafc;margin:0;padding:0;
+    }
+    .wrap{max-width:900px;margin:40px auto;padding:0 20px;}
+    .card{
+      background:#fff;border:1px solid #e5e7eb;border-radius:14px;
+      box-shadow:0 6px 14px rgba(0,0,0,.06);padding:20px;margin:18px 0;
+    }
+    .title{font-weight:700;color:#1f2937;margin-bottom:10px;font-size:18px;}
+    .muted{color:#64748b;font-size:14px;line-height:1.6;}
+    .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+    .btn{
+      background:#2563eb;color:white;padding:8px 16px;border:none;border-radius:8px;
+      font-weight:600;text-decoration:none;font-size:14px;
+    }
+    .btn:hover{background:#1e40af;cursor:pointer;}
+    .btn-outline{
+      background:#fff;color:#2563eb;border:1px solid #2563eb;
+    }
+    .btn-outline:hover{background:#2563eb;color:white;}
+    .danger{border-color:#fecaca;background:#fef2f2;}
+    .btn-danger{background:#e11d48;}
+    .btn-danger:hover{background:#be123c;}
+    .flash{
+      text-align:center;background:#dcfce7;color:#166534;
+      border:1px solid #86efac;padding:10px;border-radius:8px;
+      margin-bottom:16px;font-weight:500;
+    }
   </style>
+  <script>
+    function confirmClear(){
+      const ok = confirm("确定要清空所有答卷数据吗？此操作不可恢复！");
+      if(ok){ document.getElementById('really').value = 'yes'; }
+      return ok;
+    }
+    function confirmDeletePartials(){
+      const ok = confirm("删除所有未完成的答卷记录？此操作不可恢复！");
+      if(ok){ document.getElementById('deletePartials').value = 'yes'; }
+      return ok;
+    }
+  </script>
 </head>
 <body>
   <div class="wrap">
-    <h1>管理面板</h1>
-    <p class="muted">当前已收集的答卷条目数（行数）：<strong>{{ count }}</strong></p>
+    <h1 style="text-align:center;">管理面板</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+
+    <p style="text-align:center;color:#475569;font-size:16px;margin-bottom:20px;">
+      已完成答卷：<strong>{{ count }}</strong> 条　
+      未完成答卷：<strong style="color:#dc2626;">{{ partial }}</strong> 条
+    </p>
 
     <div class="card">
-      <h3>导出数据</h3>
-      <p class="muted">CSV 为逐行记录（参与者 × 刺激），.db 为完整 SQLite 数据库备份。</p>
+      <div class="title">导出数据</div>
+      <p class="muted">CSV 为完整答卷记录（仅导出已完成），.db 为完整数据库文件。</p>
       <div class="row">
         <a class="btn" href="{{ url_for('export_csv') }}">导出 CSV</a>
-        <a class="btn btn-outline" href="{{ url_for('export_db') }}">下载数据库（.db）</a>
+        <a class="btn" href="{{ url_for('download_db') }}">下载数据库（.db）</a>
         <a class="btn btn-outline" href="{{ url_for('index') }}">返回首页</a>
-        <a class="btn btn-danger" href="{{ url_for('logout') }}">退出登录</a>
+        <a class="btn btn-outline" href="{{ url_for('admin_logout') }}">退出登录</a>
       </div>
     </div>
 
-    <div style="margin-top:24px;">
-      <p class="muted">
-        提示：如果导出 CSV 为空，请先在前台完成一次作答再来导出；
-        如需扩展导出字段（如答题时间、IP、浏览器信息等），可在后端模型中添加对应列。
-      </p>
+    <div class="card">
+      <div class="title">清理未完成记录</div>
+      <p class="muted">此操作仅删除未完整提交的答卷，不影响已完成数据。</p>
+      <form method="post" action="{{ url_for('delete_partials') }}" onsubmit="return confirmDeletePartials()">
+        <input type="hidden" name="really" id="deletePartials" value="">
+        <button type="submit" class="btn btn-outline">删除未完成记录</button>
+      </form>
     </div>
+
+    <div class="card danger">
+      <div class="title" style="color:#b91c1c;">危险操作：清空数据库</div>
+      <p class="muted">此操作将删除所有答卷记录，请务必先备份数据库！</p>
+      <form method="post" action="{{ url_for('clear_db') }}" onsubmit="return confirmClear()">
+        <input type="hidden" name="really" id="really" value="">
+        <button type="submit" class="btn btn-danger">清空数据库</button>
+      </form>
+    </div>
+
   </div>
 </body>
 </html>

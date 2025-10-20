@@ -1,13 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ 'zh' if version == 'cn' else 'ja' }}">
 <head>
-<meta charset="UTF-8">
-<title>感谢您的参与</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ '感谢您的参与！' if version == 'cn' else 'ご協力ありがとうございました！' }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      background: #f8fafc;
+      color: #333;
+      font-family: "Noto Sans SC","Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 24px;
+    }
+    .thank-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      box-shadow: 0 6px 14px rgba(0,0,0,.06);
+      padding: 34px 42px;
+      max-width: 640px;
+      width: 100%;
+    }
+    h1 { margin: 0 0 10px; color: #1f2937; }
+    p  { margin: 8px 0; line-height: 1.7; color: #374151; }
+    .btn-area { margin-top: 22px; }
+    .btn {
+      background: #2d89ef;
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+    }
+  </style>
 </head>
 <body>
-<h1>感谢您的参与！</h1>
-<p>本次实验已完成，感谢您的时间与支持。</p>
-<p>研究者：HEPING</p>
+  <div class="thank-card">
+    {% if version == 'cn' %}
+      <h1>感谢您的参与！</h1>
+      <p>本次实验已完成，感谢您宝贵的时间与支持。</p>
+      <p>研究者：HEPING</p>
+      <div class="btn-area">
+        <a class="btn" href="{{ url_for('index') }}">返回首页</a>
+      </div>
+    {% else %}
+      <h1>ご協力ありがとうございました！</h1>
+      <p>本実験は完了しました。ご参加いただき誠にありがとうございました。</p>
+      <p>研究者：HEPING</p>
+      <div class="btn-area">
+        <a class="btn" href="{{ url_for('index') }}">ホームへ戻る</a>
+      </div>
+    {% endif %}
+  </div>
 </body>
 </html>
