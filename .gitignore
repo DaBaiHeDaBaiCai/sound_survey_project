@@ -1,0 +1,17 @@
+# venv
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
+
+# 本地数据库与导出
+data/
+*.db
+*.sqlite
+responses.csv

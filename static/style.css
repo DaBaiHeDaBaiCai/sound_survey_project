@@ -1,0 +1,196 @@
+/* ====== 全局基础 ====== */
+:root {
+  --brand: #2d89ef;
+  --brand-dark: #1b66cc;
+  --text: #1f2937;
+  --text-muted: #667085;
+  --bg: #fafafa;
+  --card-bg: #ffffff;
+  --border: #e5e7eb;
+  --shadow: 0 6px 14px rgba(0,0,0,.06);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+  font-family: "Noto Sans SC", "Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  color: var(--text);
+  background: var(--bg);
+  margin: 0;
+}
+
+/* 页面容器（首页/实验/感谢/管理） */
+.container {
+  width: 92%;
+  max-width: 880px;
+  margin: 36px auto 48px;
+}
+
+/* 标题与说明 */
+h1 {
+  font-size: 28px;
+  margin: 0 0 8px;
+  text-align: center;
+}
+h2 { font-size: 22px; margin: 16px 0; }
+.legend {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0 0 18px;
+}
+
+/* ====== 卡片化区域（可用于首页块、提示块等） ====== */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+/* ====== 公共按钮 ====== */
+.btn, button, input[type="submit"] {
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background .18s ease, transform .06s ease;
+}
+.btn:hover, button:hover, input[type="submit"]:hover {
+  background: var(--brand-dark);
+}
+.btn:active, button:active, input[type="submit"]:active { transform: translateY(1px); }
+.btn:disabled, button:disabled, input[type="submit"]:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* 反色边框按钮（管理员页返回/下载） */
+.btn-outline {
+  background: #fff;
+  color: var(--brand);
+  border: 1px solid var(--brand);
+}
+
+/* 危险按钮（退出/清空） */
+.btn-danger {
+  background: #e74c3c;
+}
+
+/* ====== 音频播放器 ====== */
+audio {
+  width: 100%;
+  margin: 18px 0 10px;
+  border-radius: 12px;
+  outline: none;
+}
+
+/* ====== 实验页：题目块 + Likert 样式 ====== */
+.question-block {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 18px 0;
+  box-shadow: var(--shadow);
+}
+.question-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+/* Likert 网格：左右端点 + 5分评分 */
+.likert {
+  display: grid;
+  grid-template-columns: 88px repeat(5, 1fr) 88px;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 6px;
+}
+.end {
+  color: #8a8f98;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.end.left { justify-self: start; }
+.end.right { justify-self: end; }
+
+/* 单选项：居中对齐、圆点稍大，现代浏览器支持 accent-color */
+.opt {
+  justify-self: center;
+  font-weight: 500;
+  color: #374151;
+}
+.opt input[type="radio"] {
+  transform: scale(1.22);
+  margin-right: 6px;
+  accent-color: var(--brand);
+}
+.opt input[disabled] {
+  filter: grayscale(100%);
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* 下一题按钮区域 */
+.actions { text-align: center; margin-top: 26px; }
+
+/* ====== 首页按钮区 ====== */
+.buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+/* ====== 管理员面板 ====== */
+.admin-wrap { max-width: 860px; margin: 40px auto; }
+.muted { color: var(--text-muted); font-size: 14px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+/* ====== 表格（如需要） ====== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+th, td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+th { background: #f7f8fa; color: #475569; font-weight: 600; }
+tr:last-child td { border-bottom: none; }
+
+/* ====== 响应式（手机优化） ====== */
+@media (max-width: 640px) {
+  .container { width: 94%; margin-top: 24px; }
+  h1 { font-size: 22px; }
+  .question-block { padding: 12px; }
+
+  /* Likert 改为更易读的 3 列栅格，会自动换行 */
+  .likert {
+    grid-template-columns: 1fr 1fr 1fr;
+    row-gap: 10px;
+  }
+  .end {
+    grid-column: span 3;
+    text-align: center;
+    font-size: 12px;
+  }
+  .opt { justify-self: center; }
+}

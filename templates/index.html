@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>声音评价问卷 - 首页</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .hero {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      margin: 0 0 6px;
+    }
+    .section {
+      margin-bottom: 24px;
+    }
+    .tips {
+      margin: 0;
+      padding-left: 22px;
+      line-height: 1.8;
+      color: var(--text);
+      text-align: left;
+    }
+    .tips li {
+      margin-bottom: 4px;
+    }
+    .lang-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-bottom: 8px;
+    }
+    .divider {
+      border-top: 1px solid var(--border);
+      margin: 24px 0;
+    }
+    .footer-note {
+      text-align: center;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+
+      <div class="hero">
+        <h1>声音评价问卷 / 声に対する印象調査</h1>
+        <p class="legend">感谢您的参与 / ご協力ありがとうございます</p>
+      </div>
+
+      <div class="section">
+        <div class="lang-title">中文说明：</div>
+        <ul class="tips">
+          <li>欢迎参加本研究。本实验旨在了解人们对不同声音的印象。</li>
+          <li>实验大约需要 10–15 分钟，请保持安静环境并使用耳机收听。</li>
+          <li>每段音频仅几秒钟，需完整播放后方可进入下一题。</li>
+          <li>评分采用 1–5 分（1 = 非常低，5 = 非常高）。</li>
+          <li>问卷匿名进行，所有数据仅用于学术研究。</li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <div class="lang-title">日本語説明：</div>
+        <ul class="tips">
+          <li>本研究へのご協力ありがとうございます。本実験は、さまざまな音声に対する印象を調べることを目的としています。</li>
+          <li>所要時間は約10〜15分です。静かな環境で、イヤホンを使用してご参加ください。</li>
+          <li>各音声は数秒間です。必ず最後まで再生してから次の質問に進んでください。</li>
+          <li>評価は1〜5の5段階です（1＝非常に低い、5＝非常に高い）。</li>
+          <li>本アンケートは匿名で行われ、収集されたデータは学術研究のみに使用されます。</li>
+        </ul>
+      </div>
+
+      <div class="buttons" style="margin-top: 20px;">
+        <a class="btn" href="{{ url_for('start', version='cn') }}">进入中文版</a>
+        <a class="btn btn-outline" href="{{ url_for('start', version='jp') }}">日本語版へ</a>
+      </div>
+
+      <div class="footer-note muted">
+        研究者：HEPING
+      </div>
+    </div>
+  </div>
+</body>
+</html>
