@@ -39,6 +39,13 @@
       text-align: center;
       margin-top: 16px;
     }
+    .info-note {
+      text-align: center;
+      margin: 16px 0 8px;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
@@ -73,6 +80,40 @@
           <li>本アンケートは匿名で行われ、収集されたデータは学術研究のみに使用されます。</li>
         </ul>
       </div>
+
+      <!-- 新增说明 -->
+      <div class="info-note">
+        进入实验前将填写基本信息（学号、年龄、性别）<br>
+        実験開始前に基本情報（学籍番号・年齢・性別）を入力します
+      </div>
+
+      <!-- 试听 / 試聴 -->
+    <div class="section">
+      <div class="lang-title">试听 / 試聴</div>
+        <p class="legend" style="margin-top:34px;">
+        请先播放下面的短音频，确认音量合适、能清晰听见；<br>
+        下の短い音声で音量と聞こえ方をご確認ください。
+        </p>
+
+      <div class="audio-grid">
+        <div class="audio-card">
+          <div class="audio-label">中文试听</div>
+          <audio class="sample-audio" controls preload="none">
+            <source src="{{ url_for('static', filename='samples/test_CN.wav') }}" type="audio/wav">
+            您的浏览器不支持音频播放。
+          </audio>
+        </div>
+
+        <div class="audio-card">
+          <div class="audio-label">日本語試聴</div>
+          <audio class="sample-audio" controls preload="none">
+            <source src="{{ url_for('static', filename='samples/test_JP.wav') }}" type="audio/wav">
+            お使いのブラウザは音声再生に対応していません。
+          </audio>
+        </div>
+      </div>
+    </div>
+
 
       <div class="buttons" style="margin-top: 20px;">
         <a class="btn" href="{{ url_for('start', version='cn') }}">进入中文版</a>

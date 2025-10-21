@@ -35,6 +35,9 @@ db.init_app(app)
 class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     participant_id = db.Column(db.String(50))
+    student_id = db.Column(db.String(20))
+    age = db.Column(db.Integer)
+    gender = db.Column(db.String(10))
     version = db.Column(db.String(10))
     stimulus_label = db.Column(db.String(50))
     person = db.Column(db.String(20))
@@ -62,6 +65,12 @@ with app.app_context():
             conn.execute(sa_text("ALTER TABLE response ADD COLUMN run_id VARCHAR(36)"))
         if "is_complete" not in cols:
             conn.execute(sa_text("ALTER TABLE response ADD COLUMN is_complete BOOLEAN DEFAULT 0"))
+        if "student_id" not in cols:
+            conn.execute(sa_text("ALTER TABLE response ADD COLUMN student_id VARCHAR(20)"))
+        if "age" not in cols:
+            conn.execute(sa_text("ALTER TABLE response ADD COLUMN age INTEGER"))
+        if "gender" not in cols:
+            conn.execute(sa_text("ALTER TABLE response ADD COLUMN gender VARCHAR(10)"))
 
 # -------------------- 辅助函数 --------------------
 def admin_required():
@@ -103,7 +112,43 @@ def start(version):
     session["current_index"] = 0
     session["run_id"] = str(uuid.uuid4())
 
-    return redirect(url_for("experiment"))
+    return redirect(url_for("participant_info", version=version))
+
+
+
+@app.route("/participant/<version>", methods=["GET", "POST"])
+def participant_info(version):
+    version = (version or "").lower()
+    if version not in ("cn", "jp"):
+        return "Invalid version", 400
+
+    if request.method == "POST":
+        # 简单校验
+        student_id = (request.form.get("student_id") or "").strip()
+        age_raw = (request.form.get("age") or "").strip()
+        gender = (request.form.get("gender") or "").strip()
+
+        # 年龄转 int，失败则为 None
+        try:
+            age = int(age_raw) if age_raw else None
+        except ValueError:
+            age = None
+
+        # 存到 session，后续每题写入数据库
+        session["student_id"] = student_id
+        session["age"] = age
+        session["gender"] = gender
+
+        return redirect(url_for("experiment"))
+
+    # GET：渲染表单（带会话预填）
+    return render_template(
+        "participant_info.html",
+        version=version,
+        student_id=session.get("student_id", ""),
+        age=session.get("age") if session.get("age") is not None else "",
+        gender=session.get("gender", "")
+    )
 
 # -------------------- 实验主流程 --------------------
 @app.route("/experiment", methods=["GET", "POST"])
@@ -133,6 +178,9 @@ def experiment():
         # 写入一条记录
         r = Response(
             participant_id=session.get("participant_id", ""),
+            student_id=session.get("student_id") or "",
+            age=session.get("age"),
+            gender=session.get("gender") or "",
             version=version,
             stimulus_label=stim.get("stimulus_label", ""),
             person=stim.get("person", ""),
@@ -226,7 +274,7 @@ def admin_panel():
 # -------------------- 导出 CSV --------------------
 @app.route("/admin/export_csv")
 def export_csv():
-    if not admin_required():
+    if not session.get("admin"):
         return redirect(url_for("admin"))
 
     stmt = select(Response).where(Response.is_complete == True)
@@ -236,6 +284,9 @@ def export_csv():
     for r in rows:
         records.append({
             "participant_id": r.participant_id,
+            "student_id": r.student_id or "",
+            "age": r.age or "",
+            "gender": r.gender or "",
             "version": r.version,
             "stimulus_label": r.stimulus_label,
             "person": r.person,
@@ -255,6 +306,7 @@ def export_csv():
     mem = io.BytesIO(csv_buffer.getvalue().encode("utf-8-sig"))
     mem.seek(0)
     return send_file(mem, mimetype="text/csv", as_attachment=True, download_name="responses.csv")
+
 
 # -------------------- 导出数据库（下载 .db） --------------------
 @app.route("/admin/download_db")

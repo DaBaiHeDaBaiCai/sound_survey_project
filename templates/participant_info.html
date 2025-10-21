@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="{{ 'zh' if version == 'cn' else 'ja' }}">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ '参与者信息' if version == 'cn' else '参加者情報' }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    * { box-sizing: border-box; }
+
+    body{
+      font-family:"Noto Sans SC","Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:#f7fafc;margin:0
+    }
+    .container{max-width:760px;margin:40px auto;padding:0 16px}
+    .card{
+      background:#fff;border:1px solid #e5e7eb;border-radius:14px;
+      box-shadow:0 6px 14px rgba(0,0,0,.06);padding:24px
+    }
+    h1{margin:0 0 12px;font-size:22px;color:#111827;text-align:center}
+    p.note{color:#64748b;text-align:center;margin:0 0 18px;font-size:14px}
+    label{display:block;margin:14px 0 6px;color:#374151}
+    .control{
+      width:100%; height:44px; padding:10px 12px;
+      border:1px solid #e5e7eb; border-radius:8px; font-size:16px; outline:none; background:#fff;
+    }
+    .control:focus{border-color:#2563eb; box-shadow:0 0 0 2px rgba(37,99,235,0.15)}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:end;}
+    select.control{
+      -webkit-appearance: none; -moz-appearance: none; appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, #9ca3af 50%),
+                        linear-gradient(135deg, #9ca3af 50%, transparent 50%);
+      background-position: right 12px top 50%, right 6px top 50%;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      padding-right:32px;
+    }
+    .btns{margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    button, .btn{
+      background:#2563eb;color:#fff;border:none;border-radius:10px;
+      padding:10px 18px;font-weight:700;font-size:16px;cursor:pointer
+    }
+    .btn.sec{background:#fff;color:#2563eb;border:1px solid #2563eb}
+    .tips{color:#9ca3af;text-align:center;margin-top:8px;font-size:12px}
+    @media (max-width:640px){.row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>{{ '参与者信息' if version == 'cn' else '参加者情報' }}</h1>
+      <p class="note">
+        {% if version == 'cn' %}
+          请填写以下信息，仅用于研究统计，不会用于身份识别。
+        {% else %}
+          以下の情報をご記入ください。統計目的のみで使用し、個人を特定することはありません。
+        {% endif %}
+      </p>
+
+      <form method="post">
+        <!-- 学号 -->
+        <label for="student_id">{{ '学号（必填）' if version == 'cn' else '学籍番号（必須）' }}</label>
+        <input id="student_id" name="student_id" type="text"
+               class="control"
+               required
+               placeholder="{{ '例如：C1G11001' if version == 'cn' else '例：C1G11001' }}">
+
+        <div class="row">
+          <!-- 年龄 -->
+          <div>
+            <label for="age">{{ '年龄（数字，必填）' if version == 'cn' else '年齢（数字・必須）' }}</label>
+            <input id="age" name="age" type="number" min="1" max="120" class="control" required>
+          </div>
+
+          <!-- 性别 -->
+          <div>
+            <label for="gender">{{ '性别（必填）' if version == 'cn' else '性別（必須）' }}</label>
+            <select id="gender" name="gender" class="control" required>
+              {% if version == 'cn' %}
+                <option value="" disabled selected>请选择</option>
+                <option value="男性">男性</option>
+                <option value="女性">女性</option>
+                <option value="不回答">不回答</option>
+              {% else %}
+                <option value="" disabled selected>選択してください</option>
+                <option value="男性">男性</option>
+                <option value="女性">女性</option>
+                <option value="無回答">無回答</option>
+              {% endif %}
+            </select>
+          </div>
+        </div>
+
+        <div class="btns">
+          <a class="btn sec" href="{{ url_for('index') }}">{{ '返回首页' if version == 'cn' else 'トップへ戻る' }}</a>
+          <button type="submit">{{ '开始答题' if version == 'cn' else '回答を開始' }}</button>
+        </div>
+        <div class="tips">
+          {% if version == 'cn' %}
+            点击“开始答题”即表示您知情同意并进入正式实验。
+          {% else %}
+            「回答を開始」を押すと、説明に同意の上、実験を開始します。
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
